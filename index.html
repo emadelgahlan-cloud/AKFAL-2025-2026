@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#06060e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="إقفال">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>إقفال</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06060e;
+  --bg2:#0b0c18;
+  --bg3:#10111f;
+  --bg4:#161726;
+  --red:#d91a38;
+  --red2:#ff2040;
+  --red3:#ff4060;
+  --rga:rgba(217,26,56,0.18);
+  --rgs:rgba(217,26,56,0.08);
+  --gold:#c9920a;
+  --gold2:#f5b830;
+  --gold3:#ffe08a;
+  --gga:rgba(201,146,10,0.15);
+  --tx:#f0f0fa;
+  --tx2:#a0a0c0;
+  --tx3:#55556a;
+  --tx4:#2e2e42;
+  --ok:#00c896;
+  --oka:rgba(0,200,150,0.12);
+  --warn:#e08820;
+  --wna:rgba(224,136,32,0.12);
+  --blue:#1e8fff;
+  --bla:rgba(30,143,255,0.12);
+  --r:14px;
+  --r2:10px;
+  --r3:20px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Cairo',sans-serif;color:var(--tx)}
+
+/* ── GRID BG ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(217,26,56,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(217,26,56,0.04) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+
+#app{height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden;z-index:1}
+
+/* ── HEADER ── */
+.hdr{
+  padding:14px 18px 10px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,6,14,0.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(217,26,56,0.25);position:relative;flex-shrink:0;
+}
+.hdr-glow{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 5%,var(--red2) 40%,var(--gold2) 60%,transparent 95%)}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-mark{
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  background:var(--rga);border:1px solid rgba(217,26,56,0.35);border-radius:10px;
+}
+.logo-mark svg{width:26px;height:26px}
+.logo-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--red2);letter-spacing:3px;line-height:1}
+.logo-byline{font-size:9px;color:var(--tx3);letter-spacing:1.5px;margin-top:2px}
+.hdr-right{display:flex;align-items:center;gap:6px}
+.live-pill{
+  display:flex;align-items:center;gap:5px;padding:4px 10px;
+  background:var(--oka);border:1px solid rgba(0,200,150,0.25);border-radius:20px;
+  font-size:10px;color:var(--ok);font-weight:600;letter-spacing:1px;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:livePulse 2s infinite}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(0,200,150,0.5)}60%{box-shadow:0 0 0 5px rgba(0,200,150,0)}}
+
+/* ── BIG TIMER BLOCK ── */
+.timer-hero{
+  background:var(--bg2);border-bottom:1px solid rgba(217,26,56,0.2);
+  padding:18px 18px 14px;flex-shrink:0;position:relative;overflow:hidden;
+}
+.timer-hero::before{
+  content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+  width:280px;height:120px;background:radial-gradient(ellipse,rgba(217,26,56,0.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.timer-label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.timer-tag{
+  font-size:9px;letter-spacing:2px;color:var(--tx3);text-transform:uppercase;
+  border:1px solid var(--tx4);border-radius:4px;padding:3px 8px;
+}
+.timer-event{font-size:11px;color:var(--gold2);font-weight:600;max-width:65%;text-align:left;line-height:1.4}
+
+/* THE BIG CLOCK */
+.big-clock{
+  display:flex;align-items:flex-end;justify-content:center;gap:4px;
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  line-height:1;
+}
+.clock-seg{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.clock-num{
+  font-size:54px;color:var(--tx);
+  text-shadow:0 0 30px rgba(217,26,56,0.5),0 0 60px rgba(217,26,56,0.2);
+  letter-spacing:-1px;
+}
+.clock-num.urgent{
+  color:var(--red2);
+  animation:urgentPulse 1s infinite;
+  text-shadow:0 0 20px rgba(255,32,64,0.8),0 0 40px rgba(255,32,64,0.4);
+}
+@keyframes urgentPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.clock-unit{font-size:9px;color:var(--tx3);letter-spacing:2px;font-family:'Cairo',sans-serif;font-weight:400}
+.clock-colon{
+  font-size:50px;color:var(--red);opacity:0.5;padding-bottom:8px;
+  animation:colonBlink 1s step-end infinite;
+}
+@keyframes colonBlink{0%,49%{opacity:0.5}50%,100%{opacity:0.1}}
+.clock-days-badge{
+  display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;
+}
+.days-chip{
+  background:var(--rga);border:1px solid rgba(217,26,56,0.3);border-radius:20px;
+  padding:4px 14px;font-size:12px;color:var(--red3);font-weight:700;letter-spacing:1px;
+}
+.days-chip.ok{background:var(--oka);border-color:rgba(0,200,150,0.3);color:var(--ok)}
+.days-chip.warn{background:var(--wna);border-color:rgba(224,136,32,0.3);color:var(--warn)}
+
+/* ── NAV ── */
+.nav{
+  display:flex;background:rgba(6,6,14,0.98);border-top:1px solid rgba(217,26,56,0.2);
+  position:fixed;bottom:0;left:0;right:0;z-index:80;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.nb{
+  flex:1;padding:10px 4px 8px;border:none;background:transparent;color:var(--tx3);
+  font-family:'Cairo',sans-serif;font-size:10px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.2s;
+  position:relative;
+}
+.nb svg{width:20px;height:20px;transition:all 0.2s}
+.nb.act{color:var(--red2)}
+.nb.act svg{filter:drop-shadow(0 0 4px rgba(255,32,64,0.6))}
+.nb-bar{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:2px;
+  background:var(--red2);border-radius:0 0 2px 2px;transition:width 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 0 8px rgba(217,26,56,0.8);
+}
+.nb.act .nb-bar{width:28px}
+
+/* ── PAGES ── */
+.page{display:none;flex:1;overflow-y:auto;padding-bottom:68px}
+.page.act{display:block}
+.page::-webkit-scrollbar{width:2px}
+.page::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px}
+
+/* ── HOME PAGE ── */
+.progress-wrap{padding:16px 16px 8px}
+.section-label{
+  font-size:10px;letter-spacing:2px;color:var(--tx3);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--tx4),transparent)}
+
+/* Progress arc */
+.arc-wrap{
+  background:var(--bg3);border:1px solid rgba(217,26,56,0.18);border-radius:var(--r);
+  padding:20px 16px 16px;display:flex;align-items:center;gap:16px;margin-bottom:12px;
+}
+.arc-ring{width:100px;height:100px;flex-shrink:0;position:relative}
+.arc-ring svg{transform:rotate(-90deg)}
+.arc-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.arc-pct{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--tx);line-height:1}
+.arc-sub{font-size:8px;color:var(--tx3);margin-top:2px;letter-spacing:1px}
+.arc-info{flex:1}
+.arc-title{font-size:11px;color:var(--tx3);letter-spacing:1px;margin-bottom:4px}
+.arc-name{font-size:15px;font-weight:700;color:var(--tx);line-height:1.4;margin-bottom:10px}
+.arc-bars{}
+.arc-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.arc-bar-label{font-size:10px;color:var(--tx3);width:36px;flex-shrink:0;text-align:right}
+.arc-bar-track{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.arc-bar-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
+.arc-bar-val{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--tx2);width:20px}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.stat-pill{
+  background:var(--bg3);border:1px solid var(--tx4);border-radius:var(--r2);
+  padding:10px 6px;text-align:center;
+}
+.stat-n{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;line-height:1}
+.stat-n.r{color:var(--red2)}
+.stat-n.g{color:var(--gold2)}
+.stat-n.ok{color:var(--ok)}
+.stat-n.dim{color:var(--tx3)}
+.stat-l{font-size:9px;color:var(--tx3);margin-top:3px;letter-spacing:0.5px}
+
+/* Notif banner */
+.notif-banner{
+  background:var(--gga);border:1px solid rgba(201,146,10,0.25);border-radius:var(--r2);
+  padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;
+}
+.notif-txt{flex:1;font-size:11px;color:var(--gold2);line-height:1.5}
+.btn-notif{
+  padding:6px 12px;background:var(--gold2);border:none;border-radius:6px;
+  color:#000;font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;
+}
+
+.sdiv{
+  font-size:9px;letter-spacing:2px;color:var(--tx3);
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--tx4)}
+
+/* Phases */
+.phases{padding:0}
+.phase-block{margin-bottom:8px}
+.phase-hdr{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--bg3);border:1px solid var(--tx4);border-radius:var(--r2);
+  cursor:pointer;transition:border-color 0.2s;
+}
+.phase-hdr:active{background:var(--bg4)}
+.ph-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ph-name{font-size:13px;font-weight:600;flex:1}
+.ph-stat{font-size:10px;color:var(--tx3)}
+.ph-chev{color:var(--tx3);transition:transform 0.25s;flex-shrink:0}
+.phase-block.open .ph-chev{transform:rotate(180deg)}
+.phase-items{display:none;padding:6px 0 0 10px}
+.phase-block.open .phase-items{display:block}
+
+/* Alert card */
+.ac{
+  margin-bottom:7px;padding:11px 14px;
+  background:var(--bg3);border:1px solid var(--tx4);
+  border-radius:var(--r2);position:relative;overflow:hidden;cursor:pointer;
+  transition:border-color 0.2s,transform 0.15s;
+}
+.ac:active{transform:scale(0.985)}
+.ac::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0}
+.ac.done::after{background:var(--ok)}
+.ac.near::after{background:var(--red2);box-shadow:0 0 8px rgba(255,32,64,0.6);animation:acBlink 1s infinite}
+.ac.warn::after{background:var(--warn)}
+.ac.future::after{background:var(--tx4)}
+@keyframes acBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+.ac.done{opacity:0.55}
+.ac-row1{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px}
+.ac-date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--tx3);letter-spacing:1px}
+.badge{font-size:8px;padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:1px;white-space:nowrap}
+.b-done{background:var(--oka);color:var(--ok);border:1px solid rgba(0,200,150,0.25)}
+.b-near{background:var(--rga);color:var(--red3);border:1px solid rgba(217,26,56,0.3)}
+.b-warn{background:var(--wna);color:var(--warn);border:1px solid rgba(224,136,32,0.25)}
+.b-fut{background:rgba(46,46,66,0.5);color:var(--tx3);border:1px solid var(--tx4)}
+.ac-title{font-size:12.5px;line-height:1.5;color:var(--tx);font-weight:600}
+.ac-footer{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
+.ac-dl{font-size:10px;color:var(--tx3)}
+.ac-tip{
+  margin-top:8px;padding:8px 10px;background:rgba(201,146,10,0.06);
+  border-radius:6px;border-right:2px solid var(--gold2);
+  font-size:11px;color:var(--gold3);line-height:1.6;display:none;
+}
+.ac.expanded .ac-tip{display:block}
+
+/* ── ALERTS PAGE ── */
+.pg-hdr{padding:16px 16px 8px}
+.pg-title{font-size:20px;font-weight:700;letter-spacing:0.5px}
+.pg-sub{font-size:11px;color:var(--tx3);margin-top:2px}
+.filter-strip{display:flex;gap:5px;padding:4px 16px 10px;overflow-x:auto}
+.filter-strip::-webkit-scrollbar{display:none}
+.fb{
+  padding:5px 14px;border-radius:20px;border:1px solid var(--tx4);
+  background:transparent;color:var(--tx3);font-family:'Cairo',sans-serif;
+  font-size:11px;white-space:nowrap;cursor:pointer;transition:all 0.2s;
+}
+.fb.act{background:var(--red2);color:#fff;border-color:var(--red2);box-shadow:0 0 12px rgba(217,26,56,0.4)}
+.alc{padding:0 16px}
+
+/* ── ADD PAGE ── */
+.form-wrap{padding:14px 16px}
+.fg{margin-bottom:12px}
+.fl{font-size:11px;color:var(--tx2);margin-bottom:5px;display:block;letter-spacing:0.5px}
+.fi,.fs,.fta{
+  width:100%;padding:11px 14px;background:var(--bg3);
+  border:1px solid var(--tx4);border-radius:var(--r2);
+  color:var(--tx);font-family:'Cairo',sans-serif;font-size:14px;outline:none;
+  transition:border-color 0.2s;
+}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--red2);box-shadow:0 0 0 2px rgba(217,26,56,0.1)}
+.fta{resize:vertical;min-height:75px}
+.fs{cursor:pointer;appearance:none}
+option{background:var(--bg3);color:var(--tx)}
+.btn-add{
+  width:100%;padding:14px;background:var(--red2);border:none;border-radius:var(--r);
+  color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;
+  letter-spacing:1px;transition:all 0.2s;
+  box-shadow:0 4px 20px rgba(217,26,56,0.35);
+}
+.btn-add:active{transform:scale(0.97)}
+.empty{text-align:center;padding:32px 20px;color:var(--tx3);font-size:12px}
+.empty-ic{font-size:36px;opacity:0.2;margin-bottom:8px}
+
+/* ── ABOUT PAGE ── */
+.about-hero{
+  padding:28px 20px 20px;text-align:center;
+  background:radial-gradient(ellipse at 50% 0%,rgba(217,26,56,0.08) 0%,transparent 60%);
+}
+.about-logo-wrap{
+  width:72px;height:72px;background:var(--rga);border:1px solid rgba(217,26,56,0.3);
+  border-radius:18px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;
+}
+.about-logo-wrap svg{width:44px;height:44px}
+.about-title{font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:var(--red2);letter-spacing:3px}
+.about-ver{font-size:11px;color:var(--tx3);margin-top:4px;letter-spacing:1px}
+.about-sec{padding:0 16px 14px}
+.about-sec h3{font-size:11px;letter-spacing:2px;color:var(--gold2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--tx4)}
+.about-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03);align-items:flex-start}
+.about-ic{width:24px;text-align:center;flex-shrink:0;font-size:16px;margin-top:1px}
+.about-txt{font-size:12px;color:var(--tx2);line-height:1.6}
+.dev-card{
+  background:var(--bg3);border:1px solid rgba(217,26,56,0.2);border-radius:var(--r);
+  padding:14px;display:flex;gap:12px;align-items:center;margin-bottom:14px;
+}
+.dev-av{
+  width:46px;height:46px;border-radius:12px;background:var(--red2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;color:#fff;flex-shrink:0;
+}
+.dev-name{font-size:14px;font-weight:700}
+.dev-role{font-size:10px;color:var(--tx3);margin-top:2px;letter-spacing:1px}
+
+/* ── SPLASH ── */
+#splash{
+  position:fixed;inset:0;background:var(--bg);z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+}
+#splash::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(217,26,56,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(217,26,56,0.04) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+.sp-logo{text-align:center;position:relative;z-index:1}
+.sp-icon-wrap{
+  width:88px;height:88px;background:var(--rga);border:1px solid rgba(217,26,56,0.35);
+  border-radius:22px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
+  animation:spPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes spPop{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.sp-icon-wrap svg{width:52px;height:52px}
+.sp-title{
+  font-family:'Orbitron',sans-serif;font-size:46px;font-weight:900;color:var(--red2);
+  letter-spacing:6px;animation:spFade 0.5s 0.3s ease both;
+  text-shadow:0 0 40px rgba(217,26,56,0.4);
+}
+@keyframes spFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sp-line{width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--red2),var(--gold2),transparent);margin:10px auto;animation:spFade 0.5s 0.4s ease both}
+.sp-sub{font-size:12px;color:var(--tx3);letter-spacing:2px;animation:spFade 0.5s 0.5s ease both}
+.sp-sub2{font-size:11px;color:var(--tx4);letter-spacing:1px;margin-top:3px;animation:spFade 0.5s 0.55s ease both}
+.sp-loading{position:relative;z-index:1;text-align:center;animation:spFade 0.5s 0.7s ease both}
+.sp-bar{width:200px;height:2px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold2));width:0;transition:width 0.08s linear}
+.sp-txt{font-size:10px;color:var(--tx3);letter-spacing:2px}
+.sp-powered{font-size:10px;color:var(--tx4);position:relative;z-index:1;animation:spFade 0.5s 0.8s ease both}
+.sp-powered span{color:var(--gold2)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ac{animation:fadeUp 0.25s ease both}
+.stat-pill{animation:fadeUp 0.3s ease both}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-logo">
+    <div class="sp-icon-wrap">
+      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="#d91a38" stroke-width="1.8"/>
+        <circle cx="26" cy="26" r="16" fill="#06060e" stroke="#d91a38" stroke-width="1.2"/>
+        <line x1="26" y1="26" x2="26" y2="14" stroke="#d91a38" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="26" y1="26" x2="36" y2="26" stroke="#c9920a" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="26" cy="26" r="2.5" fill="#d91a38"/>
+        <circle cx="38" cy="38" r="8" fill="#06060e" stroke="#d91a38" stroke-width="1.5"/>
+        <polyline points="34.5,38 37,40.5 42,35.5" fill="none" stroke="#f5b830" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="26" y1="4" x2="26" y2="8" stroke="#d91a38" stroke-width="2" stroke-linecap="round"/>
+        <line x1="26" y1="44" x2="26" y2="48" stroke="#d91a38" stroke-width="2" stroke-linecap="round"/>
+        <line x1="4" y1="26" x2="8" y2="26" stroke="#55556a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="44" y1="26" x2="48" y2="26" stroke="#55556a" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="sp-title">إقفال</div>
+    <div class="sp-line"></div>
+    <div class="sp-sub">نظام تنبيهات إقفال العام المالي</div>
+    <div class="sp-sub2">2025 / 2026</div>
+  </div>
+  <div class="sp-loading">
+    <div class="sp-bar"><div class="sp-fill" id="spFill"></div></div>
+    <div class="sp-txt" id="spTxt">تهيئة النظام...</div>
+  </div>
+  <div class="sp-powered">تطوير: <span>عماد الجهلان</span> &nbsp;·&nbsp; Powered by Emad Elgahlan</div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="logo-row">
+      <div class="logo-mark">
+        <svg viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="13" cy="13" r="11" fill="none" stroke="#d91a38" stroke-width="1.5"/>
+          <circle cx="13" cy="13" r="7.5" fill="#0b0c18" stroke="#d91a38" stroke-width="1"/>
+          <line x1="13" y1="13" x2="13" y2="7" stroke="#d91a38" stroke-width="2" stroke-linecap="round"/>
+          <line x1="13" y1="13" x2="18" y2="13" stroke="#c9920a" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="13" cy="13" r="1.5" fill="#d91a38"/>
+          <circle cx="19.5" cy="19.5" r="5" fill="#06060e" stroke="#d91a38" stroke-width="1.2"/>
+          <polyline points="17.2,19.5 18.8,21.2 22,18" fill="none" stroke="#f5b830" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-name">إقفال</div>
+        <div class="logo-byline">الكتاب الدوري رقم 45 · 2026</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="live-pill"><div class="live-dot"></div>نشط</div>
+    </div>
+    <div class="hdr-glow"></div>
+  </div>
+
+  <!-- BIG TIMER -->
+  <div class="timer-hero">
+    <div class="timer-label-row">
+      <div class="timer-tag">▶ MISSION COUNTDOWN</div>
+      <div class="timer-event" id="nextAlertName">جاري التحميل...</div>
+    </div>
+    <div class="big-clock">
+      <div class="clock-seg">
+        <div class="clock-num" id="cdDays">--</div>
+        <div class="clock-unit">يوم</div>
+      </div>
+      <div class="clock-colon">:</div>
+      <div class="clock-seg">
+        <div class="clock-num" id="cdHours">--</div>
+        <div class="clock-unit">ساعة</div>
+      </div>
+      <div class="clock-colon">:</div>
+      <div class="clock-seg">
+        <div class="clock-num" id="cdMins">--</div>
+        <div class="clock-unit">دقيقة</div>
+      </div>
+      <div class="clock-colon">:</div>
+      <div class="clock-seg">
+        <div class="clock-num" id="cdSecs">--</div>
+        <div class="clock-unit">ثانية</div>
+      </div>
+    </div>
+    <div class="clock-days-badge">
+      <div class="days-chip" id="daysBadge">-- يوم متبقٍ</div>
+    </div>
+  </div>
+
+  <!-- PAGES -->
+  <div id="page-home" class="page act">
+    <div class="progress-wrap">
+      <div class="section-label">نظرة عامة على المهمة</div>
+
+      <!-- arc card -->
+      <div class="arc-wrap">
+        <div class="arc-ring">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(217,26,56,0.08)" stroke-width="9"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#d91a38" stroke-width="9"
+              stroke-dasharray="251.3" stroke-dashoffset="251.3" stroke-linecap="round"
+              id="progressCircle" style="transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)"/>
+            <circle cx="50" cy="50" r="33" fill="none" stroke="rgba(201,146,10,0.06)" stroke-width="1.5"/>
+          </svg>
+          <div class="arc-center">
+            <div class="arc-pct" id="progressPct">0%</div>
+            <div class="arc-sub">مكتمل</div>
+          </div>
+        </div>
+        <div class="arc-info">
+          <div class="arc-title">▶ المهمة الحالية</div>
+          <div class="arc-name">إقفال العام المالي 2025/2026</div>
+          <div class="arc-bars">
+            <div class="arc-bar-row">
+              <div class="arc-bar-label">منجز</div>
+              <div class="arc-bar-track"><div class="arc-bar-fill" id="barDone" style="background:var(--ok);width:0%"></div></div>
+              <div class="arc-bar-val" id="barDoneN">0</div>
+            </div>
+            <div class="arc-bar-row">
+              <div class="arc-bar-label">عاجل</div>
+              <div class="arc-bar-track"><div class="arc-bar-fill" id="barNear" style="background:var(--red2);width:0%"></div></div>
+              <div class="arc-bar-val" id="barNearN">0</div>
+            </div>
+            <div class="arc-bar-row">
+              <div class="arc-bar-label">قريب</div>
+              <div class="arc-bar-track"><div class="arc-bar-fill" id="barWarn" style="background:var(--warn);width:0%"></div></div>
+              <div class="arc-bar-val" id="barWarnN">0</div>
+            </div>
+            <div class="arc-bar-row">
+              <div class="arc-bar-label">قادم</div>
+              <div class="arc-bar-track"><div class="arc-bar-fill" id="barFut" style="background:var(--tx3);width:0%"></div></div>
+              <div class="arc-bar-val" id="barFutN">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- stats pills -->
+      <div class="stats-row">
+        <div class="stat-pill" style="animation-delay:.05s">
+          <div class="stat-n r" id="statDone">0</div>
+          <div class="stat-l">منجز</div>
+        </div>
+        <div class="stat-pill" style="animation-delay:.1s">
+          <div class="stat-n g" id="statNear">0</div>
+          <div class="stat-l">عاجل</div>
+        </div>
+        <div class="stat-pill" style="animation-delay:.15s">
+          <div class="stat-n ok" id="statFut">0</div>
+          <div class="stat-l">قادم</div>
+        </div>
+        <div class="stat-pill" style="animation-delay:.2s">
+          <div class="stat-n dim" id="statTotal">0</div>
+          <div class="stat-l">الكل</div>
+        </div>
+      </div>
+
+      <!-- notif banner -->
+      <div id="notifBanner" class="notif-banner" style="display:none">
+        <div style="font-size:18px">🔔</div>
+        <div class="notif-txt">فعّل الإشعارات لتلقي تنبيهات المواعيد</div>
+        <button class="btn-notif" onclick="requestNotif()">تفعيل</button>
+      </div>
+
+      <div class="sdiv">المواعيد حسب المرحلة</div>
+      <div class="phases" id="phasesList"></div>
+    </div>
+  </div>
+
+  <div id="page-alerts" class="page">
+    <div class="pg-hdr">
+      <div class="pg-title">التنبيهات</div>
+      <div class="pg-sub" id="alertsCount">0 تنبيه</div>
+    </div>
+    <div class="filter-strip">
+      <button class="fb act" onclick="setFilter('all',this)">الكل</button>
+      <button class="fb" onclick="setFilter('near',this)">⚠ عاجل</button>
+      <button class="fb" onclick="setFilter('warn',this)">قريب</button>
+      <button class="fb" onclick="setFilter('future',this)">قادم</button>
+      <button class="fb" onclick="setFilter('done',this)">✓ منجز</button>
+    </div>
+    <div class="alc" id="alertsList"></div>
+  </div>
+
+  <div id="page-add" class="page">
+    <div class="pg-hdr">
+      <div class="pg-title">إضافة تنبيه</div>
+      <div class="pg-sub">أضف موعداً مخصصاً</div>
+    </div>
+    <div class="form-wrap">
+      <div class="fg">
+        <label class="fl">عنوان التنبيه *</label>
+        <input type="text" class="fi" id="addTitle" placeholder="مثال: آخر موعد لتسليم التقارير" maxlength="120">
+      </div>
+      <div class="fg">
+        <label class="fl">التاريخ *</label>
+        <input type="date" class="fi" id="addDate" min="2026-05-01">
+      </div>
+      <div class="fg">
+        <label class="fl">المرحلة</label>
+        <select class="fs" id="addPhase">
+          <option value="مايو 2026">مايو 2026</option>
+          <option value="يونية 2026">يونية 2026</option>
+          <option value="يوليو 2026">يوليو 2026</option>
+          <option value="أغسطس/سبتمبر 2026">أغسطس / سبتمبر 2026</option>
+          <option value="مخصص">تنبيه مخصص</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">نصيحة / ملاحظة (اختياري)</label>
+        <textarea class="fta" id="addTip" placeholder="أضف نصيحة أو ملاحظة مرتبطة بهذا الموعد..."></textarea>
+      </div>
+      <button class="btn-add" onclick="addCustomAlert()">+ إضافة التنبيه</button>
+    </div>
+    <div style="padding:0 16px">
+      <div class="sdiv" style="margin-bottom:8px">التنبيهات المخصصة</div>
+      <div id="customList"></div>
+    </div>
+  </div>
+
+  <div id="page-about" class="page">
+    <div class="about-hero">
+      <div class="about-logo-wrap">
+        <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="#d91a38" stroke-width="1.8"/>
+          <circle cx="22" cy="22" r="12" fill="#06060e" stroke="#d91a38" stroke-width="1.2"/>
+          <line x1="22" y1="22" x2="22" y2="13" stroke="#d91a38" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="22" y1="22" x2="30" y2="22" stroke="#c9920a" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="22" cy="22" r="2" fill="#d91a38"/>
+          <circle cx="32" cy="32" r="8" fill="#06060e" stroke="#d91a38" stroke-width="1.5"/>
+          <polyline points="28.5,32 31,34.5 36,29.5" fill="none" stroke="#f5b830" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="about-title">إقفال</div>
+      <div class="about-ver">v1.0 · الكتاب الدوري رقم (45) لسنة 2026</div>
+    </div>
+    <div class="about-sec">
+      <div class="dev-card">
+        <div class="dev-av">ع</div>
+        <div>
+          <div class="dev-name">عماد الجهلان</div>
+          <div class="dev-role">Emad Elgahlan — Developer</div>
+          <div style="font-size:9px;color:var(--tx4);margin-top:3px">Powered by Emad Elgahlan</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-sec">
+      <h3>عن التطبيق</h3>
+      <div class="about-row"><div class="about-ic">⏰</div><div class="about-txt">تطبيق تنبيهات متخصص لمتابعة مواعيد إقفال العام المالي 2025/2026 بناءً على الكتاب الدوري رقم (45) لسنة 2026</div></div>
+      <div class="about-row"><div class="about-ic">🗓</div><div class="about-txt">يغطي 26 موعداً رسمياً عبر 4 مراحل من مايو حتى سبتمبر 2026</div></div>
+      <div class="about-row"><div class="about-ic">✔</div><div class="about-txt">إضافة تنبيهات مخصصة مع نصائح مرتبطة بها، محفوظة محلياً</div></div>
+      <div class="about-row"><div class="about-ic">📱</div><div class="about-txt">يعمل على Android وiOS — ثبّته من Chrome أو Safari للشاشة الرئيسية</div></div>
+    </div>
+    <div class="about-sec">
+      <h3>التثبيت على Android</h3>
+      <div class="about-row"><div class="about-ic">1</div><div class="about-txt">افتح التطبيق في متصفح Chrome</div></div>
+      <div class="about-row"><div class="about-ic">2</div><div class="about-txt">اضغط على القائمة (⋮) ثم "إضافة إلى الشاشة الرئيسية"</div></div>
+      <div class="about-row"><div class="about-ic">3</div><div class="about-txt">اضغط "تثبيت" — سيظهر كأي تطبيق عادي</div></div>
+    </div>
+    <div style="text-align:center;padding:18px;color:var(--tx4);font-size:10px">إقفال © 2026 · جميع الحقوق محفوظة</div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <button class="nb act" onclick="goPage('home',this)">
+      <div class="nb-bar"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      الرئيسية
+    </button>
+    <button class="nb" onclick="goPage('alerts',this)">
+      <div class="nb-bar"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      التنبيهات
+    </button>
+    <button class="nb" onclick="goPage('add',this)">
+      <div class="nb-bar"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      إضافة
+    </button>
+    <button class="nb" onclick="goPage('about',this)">
+      <div class="nb-bar"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      عن التطبيق
+    </button>
+  </nav>
+</div>
+
+<script>
+const ALERTS_DATA=[
+  {id:1,date:'2026-05-21',title:'بدء رفع الجهات لخطط التدفقات النقدية وقبولها',phase:'مايو 2026',tip:'تأكد من إعداد خطة التدفق النقدي مسبقاً ومراجعتها قبل الرفع لتجنب الرفض'},
+  {id:2,date:'2026-05-24',title:'بدء إدخال التعديلات الشهرية لمرتبات ومستحقات شهر يونية',phase:'مايو 2026',tip:'تأكد من صحة البيانات قبل الإدخال وإجراء تجربة على منظومة Payroll'},
+  {id:3,date:'2026-06-07',title:'آخر يوم لرفع مستحقات العاملين على منظومة Payroll',phase:'يونية 2026',tip:'لا تؤجل — هذا آخر موعد وأي تأخير يؤثر على صرف مرتبات يونية'},
+  {id:4,date:'2026-06-07',title:'بدء تواريخ استحقاق صرف المستحقات الأخرى (بخلاف المرتبات)',phase:'يونية 2026',tip:'راجع قائمة المستحقات المستثناة من المرتبات وتأكد من اكتمالها'},
+  {id:5,date:'2026-06-09',title:'انتهاء مدة استحقاق صرف المستحقات الأخرى',phase:'يونية 2026',tip:'آخر يوم لصرف المستحقات الأخرى — تأكد من اكتمال جميع أوامر الدفع'},
+  {id:6,date:'2026-06-15',title:'التوقف عن إدخال استثمارات الصرف بالخصم على أبواب الموازنة (55 ع.ح)',phase:'يونية 2026',tip:'الاستثناءات: المرتبات، الضرائب، المعاشات، وأحكام القضاء فقط'},
+  {id:7,date:'2026-06-17',title:'أول تاريخ استحقاق صرف المرتبات والأجور والمستحقات',phase:'يونية 2026',tip:'تأكد من اعتماد كشوف المرتبات قبل هذا التاريخ بيومين على الأقل'},
+  {id:8,date:'2026-06-21',title:'بدء المرحلة الثانية لاستحقاق صرف المرتبات والأجور',phase:'يونية 2026',tip:'راجع الفئات المتأخرة وتأكد من شمولها في هذه الدورة'},
+  {id:9,date:'2026-06-24',title:'انتهاء المرحلة الثانية لاستحقاق صرف المرتبات والأجور',phase:'يونية 2026',tip:'آخر دفعة من المرتبات — تأكد من عدم وجود حالات استثنائية معلقة'},
+  {id:10,date:'2026-06-25',title:'آخر تاريخ استحقاق صرف أوامر الدفع الجاري والاستثماري (بخلاف المرتبات)',phase:'يونية 2026',tip:'التسوية البنكية ستتم يوم 28/6 — ارفع الأوامر قبل هذا الموعد'},
+  {id:11,date:'2026-06-25',title:'آخر تاريخ لاستقطاعات ومناقلات بنكية استثماري',phase:'يونية 2026',tip:'راجع جميع الاستقطاعات المعلقة وسوِّها فوراً'},
+  {id:12,date:'2026-06-25',title:'آخر موعد لاستلام مناقلات ورقية من قطاع التمويل (أبواب التمويل الذاتي)',phase:'يونية 2026',tip:'تأكد من استلام وتوثيق جميع المناقلات الورقية قبل نهاية الدوام'},
+  {id:13,date:'2026-06-25',title:'بدء صيانة المنظومة من 11:59م حتى 26 يونية',phase:'يونية 2026',tip:'لا يمكن إجراء أي عمليات خلال الصيانة — أنجز مهامك قبلها'},
+  {id:14,date:'2026-06-29',title:'آخر تاريخ استحقاق مناقلات على منظومة GPS (تسوية 29/6)',phase:'يونية 2026',tip:'آخر فرصة لتسوية الفروقات بين الدفتر والبنك قبل نهاية العام'},
+  {id:15,date:'2026-06-30',title:'نهاية العام المالي — الموعد النهائي للتحصيل عبر GOV-POS وإرسال الحوافظ',phase:'يونية 2026',tip:'يوم حاسم — أتمّ جميع عمليات التحصيل وأرسل الحوافظ قبل منتصف الليل'},
+  {id:16,date:'2026-06-30',title:'الموعد النهائي لتحقيق توازن الأصول والخصوم ومطابقة الاستمارة 75 ع.ح',phase:'يونية 2026',tip:'ابدأ المطابقة مبكراً — الفروقات تحتاج وقتاً لتصحيحها'},
+  {id:17,date:'2026-06-30',title:'الموعد النهائي لتسوية الاستقطاعات وأيلولة نسبة الـ15% للخزانة العامة',phase:'يونية 2026',tip:'تحقق من حسابات الـ15% من أرصدة الصناديق الخاصة قبل الإيداع'},
+  {id:18,date:'2026-07-06',title:'آخر موعد لإجراء التسويات على منظومة GFMIS لكافة الجهات',phase:'يوليو 2026',tip:'أول خطوات مرحلة الختامي — سوِّ جميع القيود المعلقة'},
+  {id:19,date:'2026-07-20',title:'ظهور الموقف المالي النهائي',phase:'يوليو 2026',tip:'راجعه فور الظهور وحدد الفروقات التي تحتاج تسوية فورية'},
+  {id:20,date:'2026-07-22',title:'انتهاء مهلة التسويات الدفترية النهائية (3 أيام عمل بعد الموقف المالي)',phase:'يوليو 2026',tip:'3 أيام فقط — وزّع المهام على الفريق وتابع التنفيذ يومياً'},
+  {id:21,date:'2026-07-27',title:'آخر تاريخ للتسليم المبدئي للحسابات الختامية للمديريات المالية',phase:'يوليو 2026',tip:'تأكد من اكتمال جميع المستندات الداعمة قبل التسليم'},
+  {id:22,date:'2026-07-30',title:'آخر تاريخ لتسليم الختامي للإدارات المختصة بقطاع الحسابات الختامية',phase:'يوليو 2026',tip:'الموعد النهائي لمرحلة الختامي — أي تأخير يؤثر على التقرير السنوي'},
+  {id:23,date:'2026-08-17',title:'بدء إدخال التسويات التعديلية على GFMIS وإنشاء مناقلات GPS',phase:'أغسطس/سبتمبر 2026',tip:'ابدأ بالفروقات الكبيرة أولاً وتدرّج نحو التفاصيل الصغيرة'},
+  {id:24,date:'2026-09-10',title:'انتهاء مهلة إدخال التسويات التعديلية على GFMIS',phase:'أغسطس/سبتمبر 2026',tip:'آخر فرصة لإدخال التسويات — راجع جميع الإدخالات قبل الإغلاق'},
+  {id:25,date:'2026-09-14',title:'انتهاء مهلة تلقي المناقلات المجمعة من إدارات الختامي',phase:'أغسطس/سبتمبر 2026',tip:'تواصل مع جميع إدارات الختامي للتأكد من إرسال مناقلاتها'},
+  {id:26,date:'2026-09-30',title:'ظهور الموقف المالي المعدل بعد التسويات التعديلية',phase:'أغسطس/سبتمبر 2026',tip:'هذا الموقف هو الأساس للتقرير المالي النهائي للعام 2025/2026'},
+];
+const PHASES=[
+  {name:'مايو 2026',color:'#d91a38',ids:[1,2]},
+  {name:'يونية 2026',color:'#c9920a',ids:[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]},
+  {name:'يوليو 2026',color:'#00c896',ids:[18,19,20,21,22]},
+  {name:'أغسطس/سبتمبر 2026',color:'#55556a',ids:[23,24,25,26]},
+];
+
+let customAlerts=JSON.parse(localStorage.getItem('eqfal_custom')||'[]');
+let curFilter='all';
+const TODAY=new Date();TODAY.setHours(0,0,0,0);
+
+function parseDate(s){const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-1,d);dt.setHours(0,0,0,0);return dt}
+function daysLeft(s){return Math.ceil((parseDate(s)-TODAY)/86400000)}
+function getStatus(s){const dl=daysLeft(s);if(dl<0)return'done';if(dl<=3)return'near';if(dl<=14)return'warn';return'future'}
+function fmtDate(s){return parseDate(s).toLocaleDateString('ar-EG',{weekday:'short',month:'long',day:'numeric'})}
+function statusLabel(s){return{done:'منجز ✓',near:'⚠ عاجل',warn:'قريب',future:'قادم'}[s]}
+function statusClass(s){return{done:'b-done',near:'b-near',warn:'b-warn',future:'b-fut'}[s]}
+function calcStats(arr){const c={done:0,near:0,warn:0,future:0};arr.forEach(a=>c[getStatus(a.date)]++);return c}
+
+function renderCard(a,i){
+  const s=getStatus(a.date);
+  const dl=daysLeft(a.date);
+  const dlTxt=dl<0?'انتهى':dl===0?'اليوم !':'بعد '+dl+' يوم';
+  const tip=a.tip?`<div class="ac-tip">💡 ${a.tip}</div>`:'';
+  const del=a.isCustom?`<button onclick="delCustom(${a.id},event)" style="background:none;border:none;color:var(--tx3);font-size:15px;cursor:pointer;padding:0 2px;line-height:1">✕</button>`:'';
+  return`<div class="ac ${s}" style="animation-delay:${i*.04}s" onclick="toggleAc(this)">
+    <div class="ac-row1">
+      <div class="ac-date">${a.date.split('-').reverse().join('/')}</div>
+      <div style="display:flex;align-items:center;gap:5px"><span class="badge ${statusClass(s)}">${statusLabel(s)}</span>${del}</div>
+    </div>
+    <div class="ac-title">${a.title}</div>
+    <div class="ac-footer">
+      <div class="ac-dl">${fmtDate(a.date)} — ${dlTxt}</div>
+    </div>
+    ${tip}
+  </div>`
+}
+
+function renderPhases(){
+  const all=[...ALERTS_DATA,...customAlerts.map(a=>({...a,isCustom:true}))];
+  document.getElementById('phasesList').innerHTML=PHASES.map((ph,pi)=>{
+    const pa=all.filter(a=>a.phase===ph.name);
+    if(!pa.length)return'';
+    const s=calcStats(pa);
+    const done=s.done,total=pa.length;
+    const items=pa.sort((a,b)=>a.date.localeCompare(b.date)).map((a,i)=>renderCard(a,i)).join('');
+    const isOpen=pa.some(a=>getStatus(a.date)!=='done');
+    return`<div class="phase-block${isOpen?' open':''}" id="ph${pi}">
+      <div class="phase-hdr" onclick="togglePh(${pi})">
+        <div class="ph-dot" style="background:${ph.color}"></div>
+        <div><div class="ph-name">${ph.name}</div><div class="ph-stat">${done}/${total} منجز</div></div>
+        <svg class="ph-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="phase-items">${items}</div>
+    </div>`
+  }).join('')
+}
+
+function updateStats(){
+  const all=[...ALERTS_DATA,...customAlerts];
+  const s=calcStats(all);const total=all.length;
+  document.getElementById('statDone').textContent=s.done;
+  document.getElementById('statNear').textContent=s.near;
+  document.getElementById('statFut').textContent=s.future+s.warn;
+  document.getElementById('statTotal').textContent=total;
+  document.getElementById('alertsCount').textContent=total+' تنبيه مجدول';
+  const pct=Math.round(s.done/total*100);
+  document.getElementById('progressPct').textContent=pct+'%';
+  const circ=251.3;
+  document.getElementById('progressCircle').style.strokeDashoffset=circ-(circ*pct/100);
+  const b=pct=>Math.round(pct)+'%';
+  document.getElementById('barDone').style.width=b(s.done/total*100);document.getElementById('barDoneN').textContent=s.done;
+  document.getElementById('barNear').style.width=b(s.near/total*100);document.getElementById('barNearN').textContent=s.near;
+  document.getElementById('barWarn').style.width=b(s.warn/total*100);document.getElementById('barWarnN').textContent=s.warn;
+  document.getElementById('barFut').style.width=b(s.future/total*100);document.getElementById('barFutN').textContent=s.future;
+}
+
+function renderAlerts(){
+  const all=[...ALERTS_DATA,...customAlerts.map(a=>({...a,isCustom:true}))];
+  const filtered=curFilter==='all'?all:all.filter(a=>getStatus(a.date)===curFilter);
+  const sorted=filtered.sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('alertsList').innerHTML=sorted.length
+    ?sorted.map((a,i)=>renderCard(a,i)).join('')
+    :'<div class="empty"><div class="empty-ic">📭</div>لا توجد تنبيهات في هذه الفئة</div>';
+}
+
+function renderCustom(){
+  const el=document.getElementById('customList');
+  if(!customAlerts.length){el.innerHTML='<div class="empty"><div class="empty-ic">➕</div>لم تضف تنبيهات مخصصة بعد</div>';return}
+  el.innerHTML=customAlerts.map((a,i)=>renderCard({...a,isCustom:true},i)).join('');
+}
+
+// COUNTDOWN
+function updateCountdown(){
+  const all=[...ALERTS_DATA,...customAlerts];
+  const upcoming=all.filter(a=>daysLeft(a.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!upcoming.length){
+    ['cdDays','cdHours','cdMins','cdSecs'].forEach(id=>document.getElementById(id).textContent='00');
+    document.getElementById('nextAlertName').textContent='اكتملت جميع المهام';
+    document.getElementById('daysBadge').textContent='✓ مكتملة';
+    document.getElementById('daysBadge').className='days-chip ok';
+    return;
+  }
+  const next=upcoming[0];
+  document.getElementById('nextAlertName').textContent=next.title;
+  const target=parseDate(next.date);target.setHours(23,59,59,999);
+
+  function tick(){
+    const now=new Date();
+    const diff=Math.max(0,target-now);
+    const dl=daysLeft(next.date);
+    const totalH=Math.floor(diff/3600000);
+    const days=Math.floor(totalH/24);
+    const h=totalH%24;
+    const m=Math.floor((diff%3600000)/60000);
+    const s=Math.floor((diff%60000)/1000);
+    const p=v=>String(v).padStart(2,'0');
+    const isUrgent=dl<=3;
+    ['cdDays','cdHours','cdMins','cdSecs'].forEach(id=>{
+      document.getElementById(id).classList.toggle('urgent',isUrgent&&dl>=0);
+    });
+    document.getElementById('cdDays').textContent=p(days);
+    document.getElementById('cdHours').textContent=p(h);
+    document.getElementById('cdMins').textContent=p(m);
+    document.getElementById('cdSecs').textContent=p(s);
+    const badge=document.getElementById('daysBadge');
+    if(dl<0){badge.textContent='انتهى';badge.className='days-chip'}
+    else if(dl===0){badge.textContent='اليوم !';badge.className='days-chip'}
+    else if(dl<=3){badge.textContent=dl+' أيام متبقية';badge.className='days-chip'}
+    else if(dl<=14){badge.textContent=dl+' يوم متبقٍ';badge.className='days-chip warn'}
+    else{badge.textContent=dl+' يوم متبقٍ';badge.className='days-chip ok'}
+  }
+  tick();setInterval(tick,1000);
+}
+
+// INTERACTIONS
+function toggleAc(el){el.classList.toggle('expanded')}
+function togglePh(i){document.getElementById('ph'+i).classList.toggle('open')}
+function setFilter(f,btn){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  renderAlerts();
+}
+function goPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('act'));
+  document.getElementById('page-'+name).classList.add('act');
+  btn.classList.add('act');
+  if(name==='alerts')renderAlerts();
+  if(name==='add')renderCustom();
+}
+function addCustomAlert(){
+  const title=document.getElementById('addTitle').value.trim();
+  const date=document.getElementById('addDate').value;
+  const phase=document.getElementById('addPhase').value;
+  const tip=document.getElementById('addTip').value.trim();
+  if(!title||!date){alert('يرجى تعبئة العنوان والتاريخ');return}
+  customAlerts.push({id:Date.now(),title,date,phase,tip});
+  localStorage.setItem('eqfal_custom',JSON.stringify(customAlerts));
+  document.getElementById('addTitle').value='';
+  document.getElementById('addDate').value='';
+  document.getElementById('addTip').value='';
+  updateStats();renderPhases();renderCustom();
+  const b=document.querySelector('.btn-add');
+  b.textContent='✓ تمت الإضافة';b.style.background='var(--ok)';
+  setTimeout(()=>{b.textContent='+ إضافة التنبيه';b.style.background=''},2000);
+}
+function delCustom(id,e){
+  e.stopPropagation();
+  customAlerts=customAlerts.filter(a=>a.id!==id);
+  localStorage.setItem('eqfal_custom',JSON.stringify(customAlerts));
+  updateStats();renderPhases();renderCustom();renderAlerts();
+}
+async function requestNotif(){
+  if(!('Notification'in window)){alert('المتصفح لا يدعم الإشعارات');return}
+  if(await Notification.requestPermission()==='granted'){
+    document.getElementById('notifBanner').style.display='none';
+    new Notification('إقفال 🔔',{body:'سيتم تنبيهك بالمواعيد المهمة'});
+  }
+}
+
+function init(){
+  updateStats();renderPhases();renderAlerts();renderCustom();updateCountdown();
+  if('Notification'in window&&Notification.permission==='default')
+    document.getElementById('notifBanner').style.display='flex';
+}
+
+// SPLASH
+window.addEventListener('load',()=>{
+  const fill=document.getElementById('spFill');
+  const txt=document.getElementById('spTxt');
+  const msgs=['تهيئة النظام...','تحميل المواعيد...','فحص التنبيهات...','الاتصال آمن...','جاهز!'];
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=1.6;fill.style.width=p+'%';
+    txt.textContent=msgs[Math.min(4,Math.floor(p/22))];
+    if(p>=100){
+      clearInterval(iv);
+      setTimeout(()=>{
+        const sp=document.getElementById('splash');
+        sp.style.transition='opacity 0.6s';sp.style.opacity='0';
+        setTimeout(()=>{sp.style.display='none';document.getElementById('app').style.display='flex';init()},600);
+      },300);
+    }
+  },35);
+});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
